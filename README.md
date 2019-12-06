@@ -35,7 +35,7 @@ type User struct {
 }
 
 func (u *User) ID() string {
-	return u.LocalID
+	return "User:" + u.LocalID
 }
 ```
 
