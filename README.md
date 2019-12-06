@@ -29,13 +29,19 @@ Make your types satisfy the `Node` interface and create the `ConnectionArgs` obj
 
 package example
 
+import (
+	"github.com/oreqizer/go-relaygen/relay"
+)
+
+const UserType = "User"
+
 type User struct {
 	LocalID string
 	Name    string
 }
 
 func (u *User) ID() string {
-	return "User:" + u.LocalID
+	return relay.ToGlobalID(UserType, u.LocalID)
 }
 ```
 
