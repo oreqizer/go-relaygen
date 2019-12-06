@@ -9,21 +9,28 @@ import (
 )
 
 var (
-	ONESTR   = "1"
-	TWOSTR   = "2"
-	THREESTR = "3"
-	FOURSTR  = "4"
-	FIVESTR  = "5"
+	useronestr   = "1"
+	usertwostr   = "2"
+	userthreestr = "3"
+	userfourstr  = "4"
+	userfivestr  = "5"
+
+	// Set later
+	useroneid   = ""
+	usertwoid   = ""
+	userthreeid = ""
+	userfourid  = ""
+	userfiveid  = ""
 )
 
 var (
-	ZERO = 0
-	ONE  = 1
-	TWO  = 2
-	// THREE = 3
-	FOUR = 4
-	// FIVE  = 5
-	SIX = 6
+	userzero = 0
+	userone  = 1
+	usertwo  = 2
+	// userthree = 3
+	userfour = 4
+	// userfive  = 5
+	usersix = 6
 )
 
 var nodesUser = []*User{
@@ -35,25 +42,36 @@ var nodesUser = []*User{
 }
 
 var edgesUser = []*UserEdge{
-	{Node: &User{}, Cursor: ONESTR},
-	{Node: &User{}, Cursor: TWOSTR},
-	{Node: &User{}, Cursor: THREESTR},
-	{Node: &User{}, Cursor: FOURSTR},
-	{Node: &User{}, Cursor: FIVESTR},
+	{Node: &User{}, Cursor: ""},
+	{Node: &User{}, Cursor: ""},
+	{Node: &User{}, Cursor: ""},
+	{Node: &User{}, Cursor: ""},
+	{Node: &User{}, Cursor: ""},
 }
 
 func init() {
-	nodesUser[0].Person.ID = ONESTR
-	nodesUser[1].Person.ID = TWOSTR
-	nodesUser[2].Person.ID = THREESTR
-	nodesUser[3].Person.ID = FOURSTR
-	nodesUser[4].Person.ID = FIVESTR
+	nodesUser[0].LocalID = useronestr
+	nodesUser[1].LocalID = usertwostr
+	nodesUser[2].LocalID = userthreestr
+	nodesUser[3].LocalID = userfourstr
+	nodesUser[4].LocalID = userfivestr
 
-	edgesUser[0].Node.Person.ID = ONESTR
-	edgesUser[1].Node.Person.ID = TWOSTR
-	edgesUser[2].Node.Person.ID = THREESTR
-	edgesUser[3].Node.Person.ID = FOURSTR
-	edgesUser[4].Node.Person.ID = FIVESTR
+	useroneid = nodesUser[0].ID()
+	usertwoid = nodesUser[1].ID()
+	userthreeid = nodesUser[2].ID()
+	userfourid = nodesUser[3].ID()
+	userfiveid = nodesUser[4].ID()
+
+	edgesUser[0].Node.LocalID = useronestr
+	edgesUser[0].Cursor = useroneid
+	edgesUser[1].Node.LocalID = usertwostr
+	edgesUser[1].Cursor = usertwoid
+	edgesUser[2].Node.LocalID = userthreestr
+	edgesUser[2].Cursor = userthreeid
+	edgesUser[3].Node.LocalID = userfourstr
+	edgesUser[3].Cursor = userfourid
+	edgesUser[4].Node.LocalID = userfivestr
+	edgesUser[4].Cursor = userfiveid
 }
 
 var tableUserConnectionFromArray = []struct {
@@ -63,7 +81,7 @@ var tableUserConnectionFromArray = []struct {
 }{
 	{
 		nodes: []*User{},
-		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &ZERO, Last: &ZERO},
+		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &userzero, Last: &userzero},
 		out: &UserConnection{
 			Edges:    []*UserEdge{},
 			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: nil, EndCursor: nil},
@@ -71,34 +89,34 @@ var tableUserConnectionFromArray = []struct {
 	},
 	{
 		nodes: nodesUser,
-		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &ZERO, Last: &ZERO},
+		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &userzero, Last: &userzero},
 		out: &UserConnection{
 			Edges:    edgesUser,
-			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: &ONESTR, EndCursor: &FIVESTR},
+			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: &useroneid, EndCursor: &userfiveid},
 		},
 	},
 	{
 		nodes: nodesUser,
-		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &TWO, Last: &ZERO},
+		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &usertwo, Last: &userzero},
 		out: &UserConnection{
 			Edges:    edgesUser[:2],
-			PageInfo: relay.PageInfo{HasNextPage: true, HasPreviousPage: false, StartCursor: &ONESTR, EndCursor: &TWOSTR},
+			PageInfo: relay.PageInfo{HasNextPage: true, HasPreviousPage: false, StartCursor: &useroneid, EndCursor: &usertwoid},
 		},
 	},
 	{
 		nodes: nodesUser,
-		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &ZERO, Last: &TWO},
+		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &userzero, Last: &usertwo},
 		out: &UserConnection{
 			Edges:    edgesUser[3:],
-			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: true, StartCursor: &FOURSTR, EndCursor: &FIVESTR},
+			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: true, StartCursor: &userfourid, EndCursor: &userfiveid},
 		},
 	},
 	{
 		nodes: nodesUser,
-		args:  &relay.ConnectionArgs{Before: &FOURSTR, After: &TWOSTR, First: &ZERO, Last: &ZERO},
+		args:  &relay.ConnectionArgs{Before: &userfourid, After: &usertwoid, First: &userzero, Last: &userzero},
 		out: &UserConnection{
 			Edges:    edgesUser[1:4],
-			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: &TWOSTR, EndCursor: &FOURSTR},
+			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: &usertwoid, EndCursor: &userfourid},
 		},
 	},
 }
@@ -160,11 +178,11 @@ var tableUserEdgesToReturn = []struct {
 	last   *int
 	out    *UserConnection
 }{
-	{edges: []*UserEdge{}, before: nil, after: nil, first: &ZERO, last: &ZERO, out: tableUserConnectionFromArray[0].out},
-	{edges: edgesUser, before: nil, after: nil, first: &ZERO, last: &ZERO, out: tableUserConnectionFromArray[1].out},
-	{edges: edgesUser, before: nil, after: nil, first: &TWO, last: &ZERO, out: tableUserConnectionFromArray[2].out},
-	{edges: edgesUser, before: nil, after: nil, first: &ZERO, last: &TWO, out: tableUserConnectionFromArray[3].out},
-	{edges: edgesUser, before: &FOURSTR, after: &TWOSTR, first: &ZERO, last: &ZERO, out: tableUserConnectionFromArray[4].out},
+	{edges: []*UserEdge{}, before: nil, after: nil, first: &userzero, last: &userzero, out: tableUserConnectionFromArray[0].out},
+	{edges: edgesUser, before: nil, after: nil, first: &userzero, last: &userzero, out: tableUserConnectionFromArray[1].out},
+	{edges: edgesUser, before: nil, after: nil, first: &usertwo, last: &userzero, out: tableUserConnectionFromArray[2].out},
+	{edges: edgesUser, before: nil, after: nil, first: &userzero, last: &usertwo, out: tableUserConnectionFromArray[3].out},
+	{edges: edgesUser, before: &userfourid, after: &usertwoid, first: &userzero, last: &userzero, out: tableUserConnectionFromArray[4].out},
 }
 
 func TestUserEdgesToReturn(t *testing.T) {
@@ -214,9 +232,9 @@ var tableUserApplyCursorsToEdges = []struct {
 }{
 	{edges: []*UserEdge{}, before: nil, after: nil, len: 0},
 	{edges: edgesUser, before: nil, after: nil, len: 5},
-	{edges: edgesUser, before: nil, after: &TWOSTR, len: 4},
-	{edges: edgesUser, before: &FOURSTR, after: nil, len: 4},
-	{edges: edgesUser, before: &FOURSTR, after: &TWOSTR, len: 3},
+	{edges: edgesUser, before: nil, after: &usertwoid, len: 4},
+	{edges: edgesUser, before: &userfourid, after: nil, len: 4},
+	{edges: edgesUser, before: &userfourid, after: &usertwoid, len: 3},
 }
 
 func TestUserApplyCursorsToEdges(t *testing.T) {
@@ -247,11 +265,11 @@ var tableUserHasPreviousPage = []struct {
 }{
 	{edges: []*UserEdge{}, before: nil, after: nil, last: nil, out: false},
 	{edges: edgesUser, before: nil, after: nil, last: nil, out: false},
-	{edges: edgesUser, before: nil, after: nil, last: &ZERO, out: false},
-	{edges: edgesUser, before: nil, after: nil, last: &SIX, out: false},
-	{edges: edgesUser, before: nil, after: nil, last: &FOUR, out: true},
-	{edges: edgesUser, before: &FOURSTR, after: &TWOSTR, last: &FOUR, out: false},
-	{edges: edgesUser, before: &FOURSTR, after: &TWOSTR, last: &ONE, out: true},
+	{edges: edgesUser, before: nil, after: nil, last: &userzero, out: false},
+	{edges: edgesUser, before: nil, after: nil, last: &usersix, out: false},
+	{edges: edgesUser, before: nil, after: nil, last: &userfour, out: true},
+	{edges: edgesUser, before: &userfourid, after: &usertwoid, last: &userfour, out: false},
+	{edges: edgesUser, before: &userfourid, after: &usertwoid, last: &userone, out: true},
 }
 
 func TestUserHasPreviousPage(t *testing.T) {
@@ -272,11 +290,11 @@ var tableUserHasNextPage = []struct {
 }{
 	{edges: []*UserEdge{}, before: nil, after: nil, first: nil, out: false},
 	{edges: edgesUser, before: nil, after: nil, first: nil, out: false},
-	{edges: edgesUser, before: nil, after: nil, first: &ZERO, out: false},
-	{edges: edgesUser, before: nil, after: nil, first: &SIX, out: false},
-	{edges: edgesUser, before: nil, after: nil, first: &FOUR, out: true},
-	{edges: edgesUser, before: &FOURSTR, after: &TWOSTR, first: &FOUR, out: false},
-	{edges: edgesUser, before: &FOURSTR, after: &TWOSTR, first: &ONE, out: true},
+	{edges: edgesUser, before: nil, after: nil, first: &userzero, out: false},
+	{edges: edgesUser, before: nil, after: nil, first: &usersix, out: false},
+	{edges: edgesUser, before: nil, after: nil, first: &userfour, out: true},
+	{edges: edgesUser, before: &userfourid, after: &usertwoid, first: &userfour, out: false},
+	{edges: edgesUser, before: &userfourid, after: &usertwoid, first: &userone, out: true},
 }
 
 func TestUserHasNextPage(t *testing.T) {

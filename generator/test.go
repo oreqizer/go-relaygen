@@ -19,21 +19,28 @@ import (
 )
 
 var (
-	ONESTR   = "1"
-	TWOSTR   = "2"
-	THREESTR = "3"
-	FOURSTR  = "4"
-	FIVESTR  = "5"
+	{{ .Name|lcFirst }}onestr   = "1"
+	{{ .Name|lcFirst }}twostr   = "2"
+	{{ .Name|lcFirst }}threestr = "3"
+	{{ .Name|lcFirst }}fourstr  = "4"
+	{{ .Name|lcFirst }}fivestr  = "5"
+
+	// Set later
+	{{ .Name|lcFirst }}oneid   = ""
+	{{ .Name|lcFirst }}twoid   = ""
+	{{ .Name|lcFirst }}threeid = ""
+	{{ .Name|lcFirst }}fourid  = ""
+	{{ .Name|lcFirst }}fiveid  = ""
 )
 
 var (
-	ZERO = 0
-	ONE  = 1
-	TWO  = 2
-	// THREE = 3
-	FOUR = 4
-	// FIVE  = 5
-	SIX = 6
+	{{ .Name|lcFirst }}zero = 0
+	{{ .Name|lcFirst }}one  = 1
+	{{ .Name|lcFirst }}two  = 2
+	// {{ .Name|lcFirst }}three = 3
+	{{ .Name|lcFirst }}four = 4
+	// {{ .Name|lcFirst }}five  = 5
+	{{ .Name|lcFirst }}six = 6
 )
 
 var nodes{{ .Name }} = []*{{ .Name }}{
@@ -45,25 +52,36 @@ var nodes{{ .Name }} = []*{{ .Name }}{
 }
 
 var edges{{ .Name }} = []*{{ .Name }}Edge{
-	{{"{"}}Node: &{{ .Name }}{}, Cursor: ONESTR},
-	{{"{"}}Node: &{{ .Name }}{}, Cursor: TWOSTR},
-	{{"{"}}Node: &{{ .Name }}{}, Cursor: THREESTR},
-	{{"{"}}Node: &{{ .Name }}{}, Cursor: FOURSTR},
-	{{"{"}}Node: &{{ .Name }}{}, Cursor: FIVESTR},
+	{{"{"}}Node: &{{ .Name }}{}, Cursor: ""},
+	{{"{"}}Node: &{{ .Name }}{}, Cursor: ""},
+	{{"{"}}Node: &{{ .Name }}{}, Cursor: ""},
+	{{"{"}}Node: &{{ .Name }}{}, Cursor: ""},
+	{{"{"}}Node: &{{ .Name }}{}, Cursor: ""},
 }
 
 func init() {
-	nodes{{ .Name }}[0].{{ .ID }} = ONESTR
-	nodes{{ .Name }}[1].{{ .ID }} = TWOSTR
-	nodes{{ .Name }}[2].{{ .ID }} = THREESTR
-	nodes{{ .Name }}[3].{{ .ID }} = FOURSTR
-	nodes{{ .Name }}[4].{{ .ID }} = FIVESTR
+	nodes{{ .Name }}[0].{{ .ID }} = {{ .Name|lcFirst }}onestr
+	nodes{{ .Name }}[1].{{ .ID }} = {{ .Name|lcFirst }}twostr
+	nodes{{ .Name }}[2].{{ .ID }} = {{ .Name|lcFirst }}threestr
+	nodes{{ .Name }}[3].{{ .ID }} = {{ .Name|lcFirst }}fourstr
+	nodes{{ .Name }}[4].{{ .ID }} = {{ .Name|lcFirst }}fivestr
 
-	edges{{ .Name }}[0].Node.{{ .ID }} = ONESTR
-	edges{{ .Name }}[1].Node.{{ .ID }} = TWOSTR
-	edges{{ .Name }}[2].Node.{{ .ID }} = THREESTR
-	edges{{ .Name }}[3].Node.{{ .ID }} = FOURSTR
-	edges{{ .Name }}[4].Node.{{ .ID }} = FIVESTR
+	{{ .Name|lcFirst }}oneid = nodes{{ .Name }}[0].ID()
+	{{ .Name|lcFirst }}twoid = nodes{{ .Name }}[1].ID()
+	{{ .Name|lcFirst }}threeid = nodes{{ .Name }}[2].ID()
+	{{ .Name|lcFirst }}fourid = nodes{{ .Name }}[3].ID()
+	{{ .Name|lcFirst }}fiveid = nodes{{ .Name }}[4].ID()
+
+	edges{{ .Name }}[0].Node.{{ .ID }} = {{ .Name|lcFirst }}onestr
+	edges{{ .Name }}[0].Cursor = {{ .Name|lcFirst }}oneid
+	edges{{ .Name }}[1].Node.{{ .ID }} = {{ .Name|lcFirst }}twostr
+	edges{{ .Name }}[1].Cursor = {{ .Name|lcFirst }}twoid
+	edges{{ .Name }}[2].Node.{{ .ID }} = {{ .Name|lcFirst }}threestr
+	edges{{ .Name }}[2].Cursor = {{ .Name|lcFirst }}threeid
+	edges{{ .Name }}[3].Node.{{ .ID }} = {{ .Name|lcFirst }}fourstr
+	edges{{ .Name }}[3].Cursor = {{ .Name|lcFirst }}fourid
+	edges{{ .Name }}[4].Node.{{ .ID }} = {{ .Name|lcFirst }}fivestr
+	edges{{ .Name }}[4].Cursor = {{ .Name|lcFirst }}fiveid
 }
 
 var table{{ .Name }}ConnectionFromArray = []struct {
@@ -73,7 +91,7 @@ var table{{ .Name }}ConnectionFromArray = []struct {
 }{
 	{
 		nodes: []*{{ .Name }}{},
-		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &ZERO, Last: &ZERO},
+		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &{{ .Name|lcFirst }}zero, Last: &{{ .Name|lcFirst }}zero},
 		out: &{{ .Name }}Connection{
 			Edges:    []*{{ .Name }}Edge{},
 			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: nil, EndCursor: nil},
@@ -81,34 +99,34 @@ var table{{ .Name }}ConnectionFromArray = []struct {
 	},
 	{
 		nodes: nodes{{ .Name }},
-		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &ZERO, Last: &ZERO},
+		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &{{ .Name|lcFirst }}zero, Last: &{{ .Name|lcFirst }}zero},
 		out: &{{ .Name }}Connection{
 			Edges:    edges{{ .Name }},
-			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: &ONESTR, EndCursor: &FIVESTR},
+			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: &{{ .Name|lcFirst }}oneid, EndCursor: &{{ .Name|lcFirst }}fiveid},
 		},
 	},
 	{
 		nodes: nodes{{ .Name }},
-		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &TWO, Last: &ZERO},
+		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &{{ .Name|lcFirst }}two, Last: &{{ .Name|lcFirst }}zero},
 		out: &{{ .Name }}Connection{
 			Edges:    edges{{ .Name }}[:2],
-			PageInfo: relay.PageInfo{HasNextPage: true, HasPreviousPage: false, StartCursor: &ONESTR, EndCursor: &TWOSTR},
+			PageInfo: relay.PageInfo{HasNextPage: true, HasPreviousPage: false, StartCursor: &{{ .Name|lcFirst }}oneid, EndCursor: &{{ .Name|lcFirst }}twoid},
 		},
 	},
 	{
 		nodes: nodes{{ .Name }},
-		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &ZERO, Last: &TWO},
+		args:  &relay.ConnectionArgs{Before: nil, After: nil, First: &{{ .Name|lcFirst }}zero, Last: &{{ .Name|lcFirst }}two},
 		out: &{{ .Name }}Connection{
 			Edges:    edges{{ .Name }}[3:],
-			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: true, StartCursor: &FOURSTR, EndCursor: &FIVESTR},
+			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: true, StartCursor: &{{ .Name|lcFirst }}fourid, EndCursor: &{{ .Name|lcFirst }}fiveid},
 		},
 	},
 	{
 		nodes: nodes{{ .Name }},
-		args:  &relay.ConnectionArgs{Before: &FOURSTR, After: &TWOSTR, First: &ZERO, Last: &ZERO},
+		args:  &relay.ConnectionArgs{Before: &{{ .Name|lcFirst }}fourid, After: &{{ .Name|lcFirst }}twoid, First: &{{ .Name|lcFirst }}zero, Last: &{{ .Name|lcFirst }}zero},
 		out: &{{ .Name }}Connection{
 			Edges:    edges{{ .Name }}[1:4],
-			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: &TWOSTR, EndCursor: &FOURSTR},
+			PageInfo: relay.PageInfo{HasNextPage: false, HasPreviousPage: false, StartCursor: &{{ .Name|lcFirst }}twoid, EndCursor: &{{ .Name|lcFirst }}fourid},
 		},
 	},
 }
@@ -170,11 +188,11 @@ var table{{ .Name }}EdgesToReturn = []struct {
 	last   *int
 	out    *{{ .Name }}Connection
 }{
-	{edges: []*{{ .Name }}Edge{}, before: nil, after: nil, first: &ZERO, last: &ZERO, out: table{{ .Name }}ConnectionFromArray[0].out},
-	{edges: edges{{ .Name }}, before: nil, after: nil, first: &ZERO, last: &ZERO, out: table{{ .Name }}ConnectionFromArray[1].out},
-	{edges: edges{{ .Name }}, before: nil, after: nil, first: &TWO, last: &ZERO, out: table{{ .Name }}ConnectionFromArray[2].out},
-	{edges: edges{{ .Name }}, before: nil, after: nil, first: &ZERO, last: &TWO, out: table{{ .Name }}ConnectionFromArray[3].out},
-	{edges: edges{{ .Name }}, before: &FOURSTR, after: &TWOSTR, first: &ZERO, last: &ZERO, out: table{{ .Name }}ConnectionFromArray[4].out},
+	{edges: []*{{ .Name }}Edge{}, before: nil, after: nil, first: &{{ .Name|lcFirst }}zero, last: &{{ .Name|lcFirst }}zero, out: table{{ .Name }}ConnectionFromArray[0].out},
+	{edges: edges{{ .Name }}, before: nil, after: nil, first: &{{ .Name|lcFirst }}zero, last: &{{ .Name|lcFirst }}zero, out: table{{ .Name }}ConnectionFromArray[1].out},
+	{edges: edges{{ .Name }}, before: nil, after: nil, first: &{{ .Name|lcFirst }}two, last: &{{ .Name|lcFirst }}zero, out: table{{ .Name }}ConnectionFromArray[2].out},
+	{edges: edges{{ .Name }}, before: nil, after: nil, first: &{{ .Name|lcFirst }}zero, last: &{{ .Name|lcFirst }}two, out: table{{ .Name }}ConnectionFromArray[3].out},
+	{edges: edges{{ .Name }}, before: &{{ .Name|lcFirst }}fourid, after: &{{ .Name|lcFirst }}twoid, first: &{{ .Name|lcFirst }}zero, last: &{{ .Name|lcFirst }}zero, out: table{{ .Name }}ConnectionFromArray[4].out},
 }
 
 func Test{{ .Name }}EdgesToReturn(t *testing.T) {
@@ -224,9 +242,9 @@ var table{{ .Name }}ApplyCursorsToEdges = []struct {
 }{
 	{edges: []*{{ .Name }}Edge{}, before: nil, after: nil, len: 0},
 	{edges: edges{{ .Name }}, before: nil, after: nil, len: 5},
-	{edges: edges{{ .Name }}, before: nil, after: &TWOSTR, len: 4},
-	{edges: edges{{ .Name }}, before: &FOURSTR, after: nil, len: 4},
-	{edges: edges{{ .Name }}, before: &FOURSTR, after: &TWOSTR, len: 3},
+	{edges: edges{{ .Name }}, before: nil, after: &{{ .Name|lcFirst }}twoid, len: 4},
+	{edges: edges{{ .Name }}, before: &{{ .Name|lcFirst }}fourid, after: nil, len: 4},
+	{edges: edges{{ .Name }}, before: &{{ .Name|lcFirst }}fourid, after: &{{ .Name|lcFirst }}twoid, len: 3},
 }
 
 func Test{{ .Name }}ApplyCursorsToEdges(t *testing.T) {
@@ -257,11 +275,11 @@ var table{{ .Name }}HasPreviousPage = []struct {
 }{
 	{edges: []*{{ .Name }}Edge{}, before: nil, after: nil, last: nil, out: false},
 	{edges: edges{{ .Name }}, before: nil, after: nil, last: nil, out: false},
-	{edges: edges{{ .Name }}, before: nil, after: nil, last: &ZERO, out: false},
-	{edges: edges{{ .Name }}, before: nil, after: nil, last: &SIX, out: false},
-	{edges: edges{{ .Name }}, before: nil, after: nil, last: &FOUR, out: true},
-	{edges: edges{{ .Name }}, before: &FOURSTR, after: &TWOSTR, last: &FOUR, out: false},
-	{edges: edges{{ .Name }}, before: &FOURSTR, after: &TWOSTR, last: &ONE, out: true},
+	{edges: edges{{ .Name }}, before: nil, after: nil, last: &{{ .Name|lcFirst }}zero, out: false},
+	{edges: edges{{ .Name }}, before: nil, after: nil, last: &{{ .Name|lcFirst }}six, out: false},
+	{edges: edges{{ .Name }}, before: nil, after: nil, last: &{{ .Name|lcFirst }}four, out: true},
+	{edges: edges{{ .Name }}, before: &{{ .Name|lcFirst }}fourid, after: &{{ .Name|lcFirst }}twoid, last: &{{ .Name|lcFirst }}four, out: false},
+	{edges: edges{{ .Name }}, before: &{{ .Name|lcFirst }}fourid, after: &{{ .Name|lcFirst }}twoid, last: &{{ .Name|lcFirst }}one, out: true},
 }
 
 func Test{{ .Name }}HasPreviousPage(t *testing.T) {
@@ -282,11 +300,11 @@ var table{{ .Name }}HasNextPage = []struct {
 }{
 	{edges: []*{{ .Name }}Edge{}, before: nil, after: nil, first: nil, out: false},
 	{edges: edges{{ .Name }}, before: nil, after: nil, first: nil, out: false},
-	{edges: edges{{ .Name }}, before: nil, after: nil, first: &ZERO, out: false},
-	{edges: edges{{ .Name }}, before: nil, after: nil, first: &SIX, out: false},
-	{edges: edges{{ .Name }}, before: nil, after: nil, first: &FOUR, out: true},
-	{edges: edges{{ .Name }}, before: &FOURSTR, after: &TWOSTR, first: &FOUR, out: false},
-	{edges: edges{{ .Name }}, before: &FOURSTR, after: &TWOSTR, first: &ONE, out: true},
+	{edges: edges{{ .Name }}, before: nil, after: nil, first: &{{ .Name|lcFirst }}zero, out: false},
+	{edges: edges{{ .Name }}, before: nil, after: nil, first: &{{ .Name|lcFirst }}six, out: false},
+	{edges: edges{{ .Name }}, before: nil, after: nil, first: &{{ .Name|lcFirst }}four, out: true},
+	{edges: edges{{ .Name }}, before: &{{ .Name|lcFirst }}fourid, after: &{{ .Name|lcFirst }}twoid, first: &{{ .Name|lcFirst }}four, out: false},
+	{edges: edges{{ .Name }}, before: &{{ .Name|lcFirst }}fourid, after: &{{ .Name|lcFirst }}twoid, first: &{{ .Name|lcFirst }}one, out: true},
 }
 
 func Test{{ .Name }}HasNextPage(t *testing.T) {

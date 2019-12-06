@@ -1,17 +1,12 @@
-//go:generate go run github.com/oreqizer/go-relaygen User Person.ID
+//go:generate go run github.com/oreqizer/go-relaygen User LocalID
 
 package example
 
-type Person struct {
-	ID   string
-	Name string
-}
-
 type User struct {
-	Person
-	Nickname string
+	LocalID string
+	Name    string
 }
 
 func (u *User) ID() string {
-	return u.Person.ID
+	return "User:" + u.LocalID
 }
